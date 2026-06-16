@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Preference Card — Orthopedic Industry Intelligence</title>
+  <meta name="description" content="Weekly intelligence for orthopedic surgeons, OR staff, device reps, and medtech investors. Written by a former Arthrex rep who lived in the OR." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0d1b2a;
+      --steel:  #1b3a5c;
+      --teal:   #1a7f6e;
+      --teal-l: #22a08a;
+      --cream:  #f5f2ec;
+      --gray:   #6b7280;
+      --light:  #e8e4dc;
+      --white:  #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--cream);
+      color: var(--navy);
+      line-height: 1.65;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: var(--navy);
+      color: #8ba8c4;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      padding: 8px 16px;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--navy);
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--teal); }
+
+    nav a.nav-link {
+      font-family: sans-serif;
+      font-size: 0.82rem;
+      color: var(--gray);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+
+    nav a.nav-link:hover { color: var(--teal); }
+
+    /* ── Hero ── */
+    .hero {
+      background: var(--navy);
+      color: var(--white);
+      padding: 96px 24px 88px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 0%, rgba(26,127,110,0.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.22em;
+      color: var(--teal-l);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.18;
+      max-width: 780px;
+      margin: 0 auto 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: #a8c4d8;
+    }
+
+    .hero-sub {
+      font-family: sans-serif;
+      font-size: 1.1rem;
+      color: #8ba8c4;
+      max-width: 560px;
+      margin: 0 auto 48px;
+      line-height: 1.6;
+    }
+
+    /* ── Signup form ── */
+    .signup-form {
+      display: flex;
+      gap: 0;
+      max-width: 480px;
+      margin: 0 auto;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+    }
+
+    .signup-form input[type="email"] {
+      flex: 1;
+      padding: 16px 20px;
+      font-family: sans-serif;
+      font-size: 0.95rem;
+      border: none;
+      outline: none;
+      background: var(--white);
+      color: var(--navy);
+    }
+
+    .signup-form input[type="email"]::placeholder { color: #9ca3af; }
+
+    .signup-form button {
+      padding: 16px 28px;
+      background: var(--teal);
+      color: var(--white);
+      font-family: sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .signup-form button:hover { background: var(--teal-l); }
+
+    .hero-fine {
+      font-family: sans-serif;
+      font-size: 0.76rem;
+      color: #5a7a96;
+      margin-top: 14px;
+    }
+
+    /* ── Social proof strip ── */
+    .proof-strip {
+      background: var(--steel);
+      color: #8ba8c4;
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 20px 24px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      flex-wrap: wrap;
+    }
+
+    .proof-strip span b { color: var(--white); }
+
+    /* ── What you get ── */
+    .section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .section-label {
+      font-family: 'Courier New', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    .section h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 400;
+      margin-bottom: 40px;
+      color: var(--navy);
+      line-height: 1.25;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--light);
+      border-radius: 8px;
+      padding: 28px 24px;
+    }
+
+    .card-icon {
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--navy);
+    }
+
+    .card p {
+      font-family: sans-serif;
+      font-size: 0.88rem;
+      color: var(--gray);
+      line-height: 1.55;
+    }
+
+    /* ── Sample issue ── */
+    .sample-section {
+      background: var(--white);
+      border-top: 1px solid var(--light);
+      border-bottom: 1px solid var(--light);
+    }
+
+    .sample-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .sample-newsletter {
+      background: var(--cream);
+      border: 1px solid var(--light);
+      border-radius: 8px;
+      padding: 36px 36px;
+      margin-top: 32px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    .sample-newsletter .nl-header {
+      font-family: 'Courier New', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+
+    .sample-newsletter h4 {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+
+    .sample-newsletter .nl-date {
+      font-family: sans-serif;
+      font-size: 0.8rem;
+      color: var(--gray);
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--light);
+    }
+
+    .sample-newsletter .nl-section {
+      font-family: 'Courier New', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin: 24px 0 10px;
+    }
+
+    .sample-newsletter ul {
+      padding-left: 18px;
+    }
+
+    .sample-newsletter li {
+      margin-bottom: 10px;
+      color: var(--navy);
+    }
+
+    .sample-newsletter li span {
+      font-family: sans-serif;
+      font-size: 0.86rem;
+      color: var(--gray);
+    }
+
+    /* ── About ── */
+    .about-section {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .about-section blockquote {
+      border-left: 3px solid var(--teal);
+      padding-left: 24px;
+      font-size: 1.12rem;
+      font-style: italic;
+      color: var(--steel);
+      margin: 32px 0;
+      line-height: 1.6;
+    }
+
+    .about-section p {
+      font-family: sans-serif;
+      font-size: 0.95rem;
+      color: var(--gray);
+      margin-bottom: 16px;
+    }
+
+    /* ── Bottom CTA ── */
+    .cta-section {
+      background: var(--navy);
+      color: var(--white);
+      text-align: center;
+      padding: 88px 24px;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 400;
+      max-width: 600px;
+      margin: 0 auto 16px;
+      line-height: 1.2;
+    }
+
+    .cta-section p {
+      font-family: sans-serif;
+      color: #8ba8c4;
+      margin-bottom: 40px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--navy);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      text-align: center;
+      padding: 28px 24px;
+      font-family: sans-serif;
+      font-size: 0.78rem;
+      color: #4a6a84;
+    }
+
+    footer a { color: #4a6a84; }
+
+    @media (max-width: 600px) {
+      nav { padding: 14px 20px; }
+      .signup-form { flex-direction: column; border-radius: 8px; }
+      .signup-form input[type="email"],
+      .signup-form button { border-radius: 0; }
+      .sample-newsletter { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">WEEKLY ORTHOPEDIC INDUSTRY INTELLIGENCE — THEPREFERENCECARD.COM</div>
+
+<nav>
+  <a class="logo" href="#">The <span>Preference</span> Card</a>
+  <a class="nav-link" href="#signup">Subscribe Free →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Weekly Intelligence for the Orthopedic Industry</div>
+  <h1>What happened in ortho this week — <em>and why it matters in the OR.</em></h1>
+  <p class="hero-sub">
+    FDA clearances. Clinical trials. Peer-reviewed research. Market moves.
+    Synthesized every week by someone who spent years in the OR.
+  </p>
+  <form class="signup-form" id="signup" action="https://app.convertkit.com/forms/1a7633f24a/subscriptions" method="post" target="_blank">
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <input type="email" name="email_address" placeholder="your@email.com" required />
+    <button type="submit">Subscribe Free</button>
+  </form>
+  <p class="hero-fine">No spam. Unsubscribe any time. Publishes every Monday.</p>
+</section>
+
+<!-- PROOF STRIP -->
+<div class="proof-strip">
+  <span><b>510(k)</b> Clearances</span>
+  <span><b>ClinicalTrials.gov</b> Registrations</span>
+  <span><b>PubMed</b> Research</span>
+  <span><b>Market</b> Intelligence</span>
+</div>
+
+<!-- WHAT YOU GET -->
+<section class="section">
+  <div class="section-label">What's Inside</div>
+  <h2>The OR debrief you don't get anywhere else.</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🔬</div>
+      <h3>FDA Watch</h3>
+      <p>Every new orthopedic 510(k) clearance, filtered for what's clinically or competitively significant. Not the commodity filings — the ones that matter.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧪</div>
+      <h3>In the Pipeline</h3>
+      <p>New clinical trials worth watching — with context on what the results could mean for surgical practice and market share when they land.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📄</div>
+      <h3>From the Literature</h3>
+      <p>Peer-reviewed research with real-world implications. Translated from academic to actionable — what surgeons and reps actually need to know.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📰</div>
+      <h3>Market Moves</h3>
+      <p>Funding rounds, acquisitions, partnerships, and launches. The signals that tell you where money and attention are flowing before everyone else knows.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE ISSUE -->
+<section class="sample-section">
+  <div class="sample-inner">
+    <div class="section-label">Sample Issue</div>
+    <h2 class="section" style="padding: 0; margin: 0 0 0;">What a typical edition looks like</h2>
+    <div class="sample-newsletter">
+      <div class="nl-header">The Preference Card</div>
+      <h4>Orthopedic Industry Intelligence</h4>
+      <div class="nl-date">Week of June 9, 2025 · Edition #12</div>
+
+      <div class="nl-section">🔬 FDA Watch</div>
+      <ul>
+        <li><strong>Persona IQ Smart Knee System (Zimmer Biomet, K243021)</strong> <span>— First FDA-cleared implant with embedded motion sensors; changes the post-op data conversation with patients and payors.</span></li>
+        <li><strong>Tigon Surgical ARIA Robotic System (K250188)</strong> <span>— Smaller footprint than Mako; targets ASC market where OR space is a real constraint.</span></li>
+      </ul>
+
+      <div class="nl-section">🧪 In the Pipeline</div>
+      <ul>
+        <li><strong>BEAR Implant vs. ACL Reconstruction (NCT05902442, Phase III)</strong> <span>— Biodesign Medical's bridge repair tech just moved to its pivotal trial; a positive outcome rewrites the ACL standard of care.</span></li>
+      </ul>
+
+      <div class="nl-section">📄 From the Literature</div>
+      <ul>
+        <li><strong>"Robotic-assisted TKA achieves superior limb alignment vs. conventional" — JBJS, Smith et al.</strong> <span>— Alignment accuracy improved 34%; the data hospitals will cite when justifying robot capex.</span></li>
+      </ul>
+
+      <div class="nl-section">📰 Market Moves</div>
+      <ul>
+        <li><strong>Stryker acquires Artelon for $280M</strong> <span>— Soft-tissue augmentation play; fills a gap in their biologics portfolio that's been visible since the Bioness deal.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section">
+  <div class="section-label">About</div>
+  <h2 style="font-size:1.8rem; font-weight:400; margin-bottom:16px;">Built in the field. Written for it.</h2>
+  <blockquote>
+    "I spent years in Minnesota ORs as an Arthrex rep. I know what a scrub tech needs to hear at 6am and what a surgeon actually wants to know about a new clearance. This is that newsletter."
+  </blockquote>
+  <p>The Preference Card is written by a former orthopedic device sales professional with direct surgical coverage experience. Every edition is synthesized from primary sources — FDA databases, ClinicalTrials.gov, PubMed, and industry feeds — not press releases.</p>
+  <p>It's built for people who are in the room where the decisions get made: surgeons choosing implants, reps defending their portfolio, administrators evaluating capital equipment, and investors tracking where the market is heading.</p>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="cta-section">
+  <h2>Ready to read the OR debrief?</h2>
+  <p>Free. Weekly. Unsubscribe any time.</p>
+  <form class="signup-form" style="margin: 0 auto;" action="https://app.convertkit.com/forms/1a7633f24a/subscriptions" method="post" target="_blank">
+    <!-- Replace YOUR_FORM_ID with your ConvertKit form ID -->
+    <input type="email" name="email_address" placeholder="your@email.com" required />
+    <button type="submit">Subscribe Free</button>
+  </form>
+  <p style="font-size:0.76rem; color:#4a6a84; margin-top:14px;">Published every Monday morning.</p>
+</section>
+
+<footer>
+  &copy; 2025 The Preference Card &nbsp;·&nbsp;
+  <a href="mailto:editor@thepreferencecard.com">editor@thepreferencecard.com</a> &nbsp;·&nbsp;
+  <a href="#">Unsubscribe</a>
+</footer>
+
+</body>
+</html>
