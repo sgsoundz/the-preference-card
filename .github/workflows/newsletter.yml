@@ -2,8 +2,8 @@ name: Weekly Newsletter Generation
 
 on:
   schedule:
-    - cron: '0 18 * * 5'
-  workflow_dispatch:
+    - cron: '0 18 * * 5'  # Every Friday at 6pm UTC (2pm ET / 11am PT)
+  workflow_dispatch:       # Allow manual trigger from GitHub Actions UI
 
 jobs:
   generate-newsletter:
@@ -28,9 +28,9 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          AGENT_ID: agent_01S3KbtaxU6GWCipdJqNcrcr
           RECIPIENT_EMAIL: suresh.graf@gmail.com
         run: python run_newsletter.py
+
       - name: Generate and deliver sales intelligence brief
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -38,5 +38,4 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RECIPIENT_EMAIL: suresh.graf@gmail.com
-      run: python sales_brief_agent.py
-        
+        run: python sales_brief_agent.py
