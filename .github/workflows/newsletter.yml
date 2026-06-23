@@ -31,3 +31,12 @@ jobs:
           AGENT_ID: agent_01S3KbtaxU6GWCipdJqNcrcr
           RECIPIENT_EMAIL: suresh.graf@gmail.com
         run: python run_newsletter.py
+      - name: Generate and deliver sales intelligence brief
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RECIPIENT_EMAIL: suresh.graf@gmail.com
+        run: python the_preference_card/sales_brief_agent.py
+        
