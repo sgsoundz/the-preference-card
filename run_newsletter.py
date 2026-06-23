@@ -147,36 +147,13 @@ def fetch_trials() -> list:
         "sort": "StudyFirstPostDate:desc",
     }
     # ClinicalTrials.gov blocks generic user agents from automated runners
-    headers = {"User-Agent": "ThePreferenceCard/1.0 (newsletter@thepreferencecard.com)"}
+    headers = {
+        "User-Agent": "Mozilla/5.0 (compatible; ThePreferenceCard/1.0; +https://thepreferencecard.com)",
+        "Accept": "application/json",
+    }
     try:
         resp = httpx.get(url, params=params, headers=headers, timeout=30)
-        resp.raise_for_status()
-        studies = resp.json().get("studies", [])
-        rows = []
-        for s in studies:
-            p = s.get("protocolSection", {})
-            id_mod = p.get("identificationModule", {})
-            stat_mod = p.get("statusModule", {})
-            design_mod = p.get("designModule", {})
-            sponsor_mod = p.get("sponsorCollaboratorsModule", {})
-            cond_mod = p.get("conditionsModule", {})
-            interv_mod = p.get("armsInterventionsModule", {})
-            nct_id = id_mod.get("nctId", "")
-            if not nct_id:
-                continue
-            rows.append({
-                "nct_id": nct_id,
-                "title": id_mod.get("briefTitle", ""),
-                "status": stat_mod.get("overallStatus", ""),
-                "phase": (design_mod.get("phases", [None]) or [None])[0],
-                "sponsor": sponsor_mod.get("leadSponsor", {}).get("name", ""),
-                "conditions": cond_mod.get("conditions", []),
-                "interventions": [i.get("name","") for i in interv_mod.get("interventions", [])],
-                "start_date": stat_mod.get("startDateStruct", {}).get("date"),
-                "registration_date": stat_mod.get("studyFirstPostDateStruct", {}).get("date"),
-                "url": f"https://clinicaltrials.gov/study/{nct_id}",
-            })
-        print(f"  Trials: {len(rows)} new registrations")
+        print(f"  ClinicalTrials response: HTTP {resp.status_code}")
         return rows
     except Exception as e:
         print(f"  Trials fetch error: {e}")
