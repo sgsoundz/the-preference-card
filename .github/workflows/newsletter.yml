@@ -38,5 +38,5 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RECIPIENT_EMAIL: suresh.graf@gmail.com
-        run: python the_preference_card/sales_brief_agent.py
+      run: python sales_brief_agent.py
         
