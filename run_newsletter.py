@@ -99,15 +99,18 @@ def sb_insert(table: str, data: dict) -> list:
 
 # ── Data fetchers ───────────────────────────────────────────────────────────────
 def fetch_fda() -> list:
-    """Fetch recent 510(k) orthopedic clearances from openFDA."""
+    """Fetch recent 510(k) orthopedic clearances from openFDA.
+
+    'OR' is a reserved Lucene keyword so we cannot use it in a search query.
+    Instead we fetch all recent 510ks (date filter only) and filter for
+    advisory_committee == 'OR' in Python.
+    """
     print("Fetching FDA 510(k) clearances...")
-    url = "https://api.fda.gov/device/510k.json"
-    # Use 14-day lookback (wider net) and no quotes around OR — openFDA
-    # treats quoted single tokens differently and may return zero results.
     fourteen_days_ago = today - datetime.timedelta(days=14)
+    url = "https://api.fda.gov/device/510k.json"
     params = {
-        "search": f"advisory_committee:OR AND decision_date:[{fourteen_days_ago.strftime('%Y%m%d')} TO 99991231]",
-        "limit": "50",
+        "search": f"decision_date:[{fourteen_days_ago.strftime('%Y%m%d')} TO 99991231]",
+        "limit": "100",
         "sort": "decision_date:desc",
     }
     print(f"  FDA query: {params['search']}")
@@ -117,9 +120,12 @@ def fetch_fda() -> list:
         if resp.status_code != 200:
             print(f"  FDA error body: {resp.text[:300]}")
         resp.raise_for_status()
-        results = resp.json().get("results", [])
+        all_results = resp.json().get("results", [])
+        print(f"  FDA total returned: {len(all_results)} (filtering for orthopedic...)")
         rows = []
-        for r in results:
+        for r in all_results:
+            if r.get("advisory_committee", "").upper() != "OR":
+                continue
             rows.append({
                 "id": r.get("k_number", ""),
                 "device_name": r.get("device_name", ""),
@@ -129,12 +135,11 @@ def fetch_fda() -> list:
                 "advisory_committee": r.get("advisory_committee", ""),
                 "statement_or_summary": r.get("statement_or_summary", ""),
             })
-        print(f"  FDA: {len(rows)} new clearances")
+        print(f"  FDA: {len(rows)} orthopedic clearances")
         return rows
     except Exception as e:
         print(f"  FDA fetch error: {e}")
         return []
-
 def fetch_trials() -> list:
     """Fetch new orthopedic clinical trials from ClinicalTrials.gov."""
     print("Fetching clinical trials...")
@@ -146,7 +151,6 @@ def fetch_trials() -> list:
         "pageSize": "50",
         "sort": "StudyFirstPostDate:desc",
     }
-    # ClinicalTrials.gov blocks generic user agents from automated runners
     headers = {
         "User-Agent": "Mozilla/5.0 (compatible; ThePreferenceCard/1.0; +https://thepreferencecard.com)",
         "Accept": "application/json",
@@ -154,6 +158,33 @@ def fetch_trials() -> list:
     try:
         resp = httpx.get(url, params=params, headers=headers, timeout=30)
         print(f"  ClinicalTrials response: HTTP {resp.status_code}")
+        resp.raise_for_status()
+        studies = resp.json().get("studies", [])
+        rows = []
+        for s in studies:
+            p = s.get("protocolSection", {})
+            id_mod = p.get("identificationModule", {})
+            stat_mod = p.get("statusModule", {})
+            design_mod = p.get("designModule", {})
+            sponsor_mod = p.get("sponsorCollaboratorsModule", {})
+            cond_mod = p.get("conditionsModule", {})
+            interv_mod = p.get("armsInterventionsModule", {})
+            nct_id = id_mod.get("nctId", "")
+            if not nct_id:
+                continue
+            rows.append({
+                "nct_id": nct_id,
+                "title": id_mod.get("briefTitle", ""),
+                "status": stat_mod.get("overallStatus", ""),
+                "phase": (design_mod.get("phases", [None]) or [None])[0],
+                "sponsor": sponsor_mod.get("leadSponsor", {}).get("name", ""),
+                "conditions": cond_mod.get("conditions", []),
+                "interventions": [i.get("name","") for i in interv_mod.get("interventions", [])],
+                "start_date": stat_mod.get("startDateStruct", {}).get("date"),
+                "registration_date": stat_mod.get("studyFirstPostDateStruct", {}).get("date"),
+                "url": f"https://clinicaltrials.gov/study/{nct_id}",
+            })
+        print(f"  Trials: {len(rows)} new registrations")
         return rows
     except Exception as e:
         print(f"  Trials fetch error: {e}")
