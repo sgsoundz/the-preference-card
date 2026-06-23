@@ -101,10 +101,10 @@ def sb_insert(table: str, data: dict) -> list:
 def fetch_fda() -> list:
     """Fetch recent 510(k) orthopedic clearances from openFDA."""
     print("Fetching FDA 510(k) clearances...")
-    ortho_codes = "OR,OT,OZJ,OZP,OZO,OZN,OYC,OZK,OXN,OXM,OYB,OYD,OZL,OZM"
     url = "https://api.fda.gov/device/510k.json"
+    # advisory_committee_description is reliable; spaces around TO fix %2B encoding bug
     params = {
-        "search": f"product_code:({ortho_codes}) AND decision_date:[{seven_days_ago.strftime('%Y%m%d')}+TO+99991231]",
+        "search": f'advisory_committee_description:"Orthopedic" AND decision_date:[{seven_days_ago.strftime("%Y%m%d")} TO 99991231]',
         "limit": "50",
         "sort": "decision_date:desc",
     }
