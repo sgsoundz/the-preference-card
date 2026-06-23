@@ -104,12 +104,16 @@ def fetch_fda() -> list:
     url = "https://api.fda.gov/device/510k.json"
     # advisory_committee_description is reliable; spaces around TO fix %2B encoding bug
     params = {
-        "search": f'advisory_committee_description:"Orthopedic" AND decision_date:[{seven_days_ago.strftime("%Y%m%d")} TO 99991231]',
+        "search": f'advisory_committee:"OR" AND decision_date:[{seven_days_ago.strftime("%Y%m%d")} TO 99991231]',
         "limit": "50",
         "sort": "decision_date:desc",
     }
+    print(f"  FDA query: {params['search']}")
     try:
         resp = httpx.get(url, params=params, timeout=30)
+        print(f"  FDA response: HTTP {resp.status_code}")
+        if resp.status_code != 200:
+            print(f"  FDA error body: {resp.text[:300]}")
         resp.raise_for_status()
         results = resp.json().get("results", [])
         rows = []
