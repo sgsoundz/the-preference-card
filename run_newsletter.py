@@ -102,9 +102,11 @@ def fetch_fda() -> list:
     """Fetch recent 510(k) orthopedic clearances from openFDA."""
     print("Fetching FDA 510(k) clearances...")
     url = "https://api.fda.gov/device/510k.json"
-    # advisory_committee_description is reliable; spaces around TO fix %2B encoding bug
+    # Use 14-day lookback (wider net) and no quotes around OR — openFDA
+    # treats quoted single tokens differently and may return zero results.
+    fourteen_days_ago = today - datetime.timedelta(days=14)
     params = {
-        "search": f'advisory_committee:"OR" AND decision_date:[{seven_days_ago.strftime("%Y%m%d")} TO 99991231]',
+        "search": f"advisory_committee:OR AND decision_date:[{fourteen_days_ago.strftime('%Y%m%d')} TO 99991231]",
         "limit": "50",
         "sort": "decision_date:desc",
     }
@@ -133,20 +135,21 @@ def fetch_fda() -> list:
         print(f"  FDA fetch error: {e}")
         return []
 
-
 def fetch_trials() -> list:
     """Fetch new orthopedic clinical trials from ClinicalTrials.gov."""
     print("Fetching clinical trials...")
     url = "https://clinicaltrials.gov/api/v2/studies"
     params = {
         "query.cond": "orthopedic OR arthroplasty OR spine OR fracture OR sports medicine",
-        "filter.advanced": f"AREA[StartDate]RANGE[{seven_days_ago.isoformat()},MAX]",
+        "filter.advanced": f"AREA[StudyFirstPostDate]RANGE[{seven_days_ago.isoformat()},MAX]",
         "fields": "NCTId,BriefTitle,OverallStatus,Phase,LeadSponsorName,Condition,InterventionName,StartDate,StudyFirstPostDate",
         "pageSize": "50",
-        "sort": "StartDate:desc",
+        "sort": "StudyFirstPostDate:desc",
     }
+    # ClinicalTrials.gov blocks generic user agents from automated runners
+    headers = {"User-Agent": "ThePreferenceCard/1.0 (newsletter@thepreferencecard.com)"}
     try:
-        resp = httpx.get(url, params=params, timeout=30)
+        resp = httpx.get(url, params=params, headers=headers, timeout=30)
         resp.raise_for_status()
         studies = resp.json().get("studies", [])
         rows = []
@@ -178,7 +181,6 @@ def fetch_trials() -> list:
     except Exception as e:
         print(f"  Trials fetch error: {e}")
         return []
-
 
 def fetch_pubmed() -> list:
     """Fetch recent orthopedic PubMed articles."""
